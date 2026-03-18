@@ -25,7 +25,9 @@ COPY main/xiaozhi-server/requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
     pip install --no-cache-dir onnxruntime==1.18.0 && \
     pip install --no-cache-dir --no-deps silero_vad==6.1.0 && \
-    pip install --no-cache-dir -r requirements.txt --default-timeout=120 --retries 5
+    pip install --no-cache-dir -r requirements.txt --default-timeout=120 --retries 5 && \
+    pip uninstall -y torch torchaudio torchvision 2>/dev/null || true && \
+    pip cache purge
 
 COPY main/xiaozhi-server .
 
