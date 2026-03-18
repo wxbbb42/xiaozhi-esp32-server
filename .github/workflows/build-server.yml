@@ -3,10 +3,6 @@ name: Build and Push Server Image
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'main/xiaozhi-server/**'
-      - 'Dockerfile-server'
-      - 'Dockerfile-server-base'
 
 jobs:
   build:
