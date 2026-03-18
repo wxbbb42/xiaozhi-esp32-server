@@ -1,0 +1,45 @@
+name: Build and Push Server Image
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'main/xiaozhi-server/**'
+      - 'Dockerfile-server'
+      - 'Dockerfile-server-base'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push base image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile-server-base
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/xiaozhi-esp32-server:server-base
+
+      - name: Build and push server image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile-server
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/xiaozhi-esp32-server:server_latest
+            ghcr.io/${{ github.repository_owner }}/xiaozhi-esp32-server:server_${{ github.sha }}
